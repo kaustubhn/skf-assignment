@@ -48,9 +48,9 @@ $ docker-compose up -d
 Step 1: Run docker compose command  
 $ docker-compose up -d
 
-Step 2: Ssh in docker container
+Step 2: Ssh in docker container  
 $ docker exec -it web bash
 
-Step 3: Run tests
+Step 3: Run tests  
 $ pytest tests.py
 
