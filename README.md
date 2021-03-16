@@ -11,7 +11,7 @@ Prerequisite: To be installed on computer
 2. Redis 
 
 Step 1: Clone the repo  
-$ git clone <repo-url>
+$ git clone < repo-url >
 
 Step 2: Create Python Virutal Environment  
 $ python3 -m venv venv  
@@ -20,7 +20,7 @@ Step 3: Activate Virtual Environment
 $ source venv/bin/activate  
 
 Step 4: Cd to project dir  
-$ cd <repo-name>  
+$ cd < repo-name >  
 
 Step 5: Install Dependencies  
 $ pip install -r requirements.txt  
