@@ -43,4 +43,14 @@ Prerequisite: To be installed on computer
 Step 1: Run docker compose commmand  
 $ docker-compose up -d  
 
+### To Run Tests
+
+Step 1: Run docker compose command  
+$ docker-compose up -d
+
+Step 2: Ssh in docker container
+$ docker exec -it web bash
+
+Step 3: Run tests
+$ pytest tests.py
 
