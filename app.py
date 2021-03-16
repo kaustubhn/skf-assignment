@@ -1,12 +1,13 @@
+import redis, time
 from flask import Flask, request, jsonify
 from flask import make_response, abort
 from config import REDIS_HOST, REDIS_PORT, REDIS_DB, REDIS_USE_SSL, REDIS_SSL_CERT
 from config import FLASK_HOST, FLASK_PORT, FLASK_DEBUG
-import redis
+
 
 try:
     print('Trying to connect to Redis')
-    r = redis.Redis(
+    r = redis.StrictRedis(
         host=REDIS_HOST,
         port=REDIS_PORT,
         db=REDIS_DB,
@@ -46,7 +47,7 @@ def publish():
             abort(400)
         else:
             try:
-                r.set("content",request.json["content"])
+                r.zadd('contents', {request.json["content"]: round(time.time()*1000)})
                 return make_response(jsonify({"status": "success"}), 200)
             except Exception as e:
                 print(e)
@@ -57,7 +58,7 @@ def publish():
 @app.route('/api/v1/getLast', methods=['GET'])
 def get_last():
     if request.method == 'GET':
-        return make_response(jsonify({"content": r.get('content')}), 200)
+        return make_response(jsonify({"content": r.zrange('contents', -1, -1)}), 200)
     else:
         abort(405)
 
@@ -70,8 +71,7 @@ def get_by_time():
             try:
                 print(request.json['start'])
                 print(request.json['end'])
-                r.set("content",request.json["content"])
-                return make_response(jsonify({"status": "success"}), 200)
+                return make_response(jsonify({"content": r.zrange('contents', request.json['start'], request.json['end'])}), 200)
             except Exception as e:
                 print(e)
                 abort(500)
