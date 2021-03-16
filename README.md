@@ -4,7 +4,7 @@
 
 Steps to run the application
 
-###Approach 1: Without Docker
+### Approach 1: Without Docker
 
 Prerequisite: To be installed on computer
 1. Python 3
@@ -33,7 +33,7 @@ Step 7: Start Application
 $ python app.py
 
 
-###Approach 2: With Docker
+### Approach 2: With Docker
 
 Prerequisite: To be installed on computer
 1. Docker
