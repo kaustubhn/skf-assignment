@@ -9,7 +9,8 @@ try:
     r = redis.Redis(
         host=REDIS_HOST,
         port=REDIS_PORT,
-        db=REDIS_DB
+        db=REDIS_DB,
+        decode_responses=True
     )
     print('Successfully connected to Redis server')
 except Exception as e:
@@ -19,15 +20,22 @@ except Exception as e:
 
 app = Flask(__name__)
 
-
 # Error handling
+@app.errorhandler(400)
+def invalid_body(error):
+    return make_response(jsonify({'error': 'Invalid request body'}), 400)
+
 @app.errorhandler(404)
 def not_found(error):
     return make_response(jsonify({'error': 'Not found'}), 404)
 
-@app.errorhandler(400)
-def invalid_body(error):
-    return make_response(jsonify({'error': 'Invalid request body'}), 400)
+@app.errorhandler(405)
+def method_not_allowed(error):
+    return make_response(jsonify({'error': 'Method not allowed'}), 405)
+
+@app.errorhandler(500)
+def internal_server_error(error):
+    return make_response(jsonify({'error': 'Internal Server Error'}), 500)
 
 
 # Routes
@@ -42,20 +50,33 @@ def publish():
                 return make_response(jsonify({"status": "success"}), 200)
             except Exception as e:
                 print(e)
-                return make_response(jsonify({"status": "error"}), 500)
+                abort(500)
     else:
-        return jsonify({"error": "Invalid Method"})
+        abort(405)
 
 @app.route('/api/v1/getLast', methods=['GET'])
 def get_last():
     if request.method == 'GET':
-        return make_response(jsonify({"content": r.get('content')}, 200))
+        return make_response(jsonify({"content": r.get('content')}), 200)
     else:
-        return jsonify({"error": "Invalid Method"})
+        abort(405)
 
-@app.route('/api/v1/getByTime', methods=['GET'])
+@app.route('/api/v1/getByTime', methods=['POST'])
 def get_by_time():
-    return 'Hello, World!'
+    if request.method == 'POST':
+        if not request.json or not 'start' in request.json or not 'end' in request.json:
+            abort(400)
+        else:
+            try:
+                print(request.json['start'])
+                print(request.json['end'])
+                r.set("content",request.json["content"])
+                return make_response(jsonify({"status": "success"}), 200)
+            except Exception as e:
+                print(e)
+                abort(500)
+    else:
+        abort(405)
 
 if __name__ == '__main__':
    app.run(host=FLASK_HOST, port=FLASK_PORT, debug=FLASK_DEBUG)
