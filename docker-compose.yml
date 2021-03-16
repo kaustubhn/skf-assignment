@@ -1,0 +1,18 @@
+version: "3.9"
+   
+services:
+  redis:
+    image: redis
+    container_name: cache
+    expose:
+      - 6379
+  web:
+    build: .
+    container_name: web
+    command: python app.py
+    volumes:
+      - .:/code
+    ports:
+      - "5000:5000"
+    depends_on:
+      - redis
