@@ -58,7 +58,7 @@ def publish():
 @app.route('/api/v1/getLast', methods=['GET'])
 def get_last():
     if request.method == 'GET':
-        return make_response(jsonify({"content": r.zrange('contents', -1, -1)}), 200)
+        return make_response(jsonify({"content": r.zrange('contents', -1, -1)[0]}), 200)
     else:
         abort(405)
 
